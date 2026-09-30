@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+out/
+.next/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# Tests and coverage
+coverage/
+test-results/
+playwright-report/
+
+# App runtime (Lite mode cache, local exports, eval reports)
+.cache/
+exports/
+packages/evals/reports/
+
+# Environment and secrets: never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+audit*.jsonl
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Claude Code local-only settings
+.claude/settings.local.json
