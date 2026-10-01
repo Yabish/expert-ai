@@ -19,9 +19,11 @@ PACKAGE_MANAGER=pnpm
 Keep this section accurate. Update it in the same PR that changes a script.
 
 ```
-pnpm install
+pnpm install                      # Node 24 LTS (.nvmrc), pnpm 12
+pnpm build                        # turbo: builds every package to dist/
 pnpm dev                          # web app
 pnpm lint && pnpm typecheck       # must pass before every commit
+pnpm format                       # prettier (format:check in CI)
 pnpm test                         # unit tests (vitest)
 pnpm test:integration             # needs docker dev stack
 pnpm evals -- --provider <id> --model <id>
