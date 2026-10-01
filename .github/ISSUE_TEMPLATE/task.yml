@@ -1,0 +1,60 @@
+name: Task
+description: A sized unit of work (S or M) that belongs to a milestone and an epic. Mostly for maintainers.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tasks follow CLAUDE.md: size S or M only (split anything larger), testable acceptance criteria, and SPEC references. Add `type:*`, `area:*`, `priority:*` and `size:*` labels, set the milestone, and add the task to its epic's task list.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why this task exists. Link the epic.
+      placeholder: "Part of epic #N ..."
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: One or two sentences on the outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Testable checkboxes.
+      value: |
+        - [ ] 
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+    validations:
+      required: true
+  - type: input
+    id: spec
+    attributes:
+      label: SPEC sections
+      placeholder: "§5.1, §5.4"
+    validations:
+      required: true
+  - type: input
+    id: dependencies
+    attributes:
+      label: Dependencies
+      placeholder: "Blocked by #N, or None"
+    validations:
+      required: true
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      options:
+        - S (up to half a day)
+        - M (up to one focused day)
+    validations:
+      required: true
