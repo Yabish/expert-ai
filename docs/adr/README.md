@@ -7,3 +7,4 @@ To add one: copy [`template.md`](template.md) to the next free number, fill it i
 | # | Title | Status |
 |---|---|---|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
+| [0002](0002-licensing.md) | License the core under AGPL-3.0 and Enterprise code commercially | Proposed |
