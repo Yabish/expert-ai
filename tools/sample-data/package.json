@@ -19,7 +19,8 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "generate": "node dist/cli.js"
   },
   "dependencies": {
     "zod": "catalog:"
