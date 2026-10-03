@@ -57,18 +57,41 @@ export function parseBacklog(markdown) {
       m = MILESTONE_RE.exec(line);
       // Non-milestone level-2 headings (Format, Planning decisions) are prose.
       milestone = m
-        ? { key: m[1], title: `${m[1]} ${m[2].replace(/\s*\(.*\)\s*$/, '')}`, epic: null, epics: [] }
+        ? {
+            key: m[1],
+            title: `${m[1]} ${m[2].replace(/\s*\(.*\)\s*$/, '')}`,
+            epic: null,
+            epics: [],
+          }
         : null;
       if (milestone) milestones.push(milestone);
       return;
     }
 
     if ((m = EPIC_RE.exec(line))) {
-      if (!milestone) throw new BacklogParseError('EPIC_OUTSIDE_MILESTONE', `epic ${m[1]} is not under a milestone`, lineNo);
+      if (!milestone)
+        throw new BacklogParseError(
+          'EPIC_OUTSIDE_MILESTONE',
+          `epic ${m[1]} is not under a milestone`,
+          lineNo,
+        );
       const isMilestoneEpic = !m[1].includes('.');
-      epic = { id: m[1], title: m[2], labels: [], goal: '', milestone: milestone.title, tasks: [], isMilestoneEpic };
+      epic = {
+        id: m[1],
+        title: m[2],
+        labels: [],
+        goal: '',
+        milestone: milestone.title,
+        tasks: [],
+        isMilestoneEpic,
+      };
       if (isMilestoneEpic) {
-        if (milestone.epic) throw new BacklogParseError('DUPLICATE_MILESTONE_EPIC', `${milestone.key} has two milestone epics`, lineNo);
+        if (milestone.epic)
+          throw new BacklogParseError(
+            'DUPLICATE_MILESTONE_EPIC',
+            `${milestone.key} has two milestone epics`,
+            lineNo,
+          );
         milestone.epic = epic;
       } else {
         milestone.epics.push(epic);
@@ -79,7 +102,12 @@ export function parseBacklog(markdown) {
     }
 
     if ((m = TASK_RE.exec(line))) {
-      if (!epic || epic.isMilestoneEpic) throw new BacklogParseError('TASK_OUTSIDE_EPIC', `task ${m[1]} is not under a capability epic`, lineNo);
+      if (!epic || epic.isMilestoneEpic)
+        throw new BacklogParseError(
+          'TASK_OUTSIDE_EPIC',
+          `task ${m[1]} is not under a capability epic`,
+          lineNo,
+        );
       /** @type {Task} */
       const task = {
         id: m[1],
@@ -111,7 +139,12 @@ export function parseBacklog(markdown) {
           break;
         case 'Issue': {
           const issue = /^#(\d+)$/.exec(value.trim());
-          if (!issue) throw new BacklogParseError('BAD_ISSUE', `Issue must look like #123, got "${value}"`, lineNo);
+          if (!issue)
+            throw new BacklogParseError(
+              'BAD_ISSUE',
+              `Issue must look like #123, got "${value}"`,
+              lineNo,
+            );
           item.issue = Number(issue[1]);
           break;
         }
@@ -154,15 +187,21 @@ function validate(milestones) {
   const issues = new Set();
   const tasks = [];
   for (const ms of milestones) {
-    if (!ms.epic) throw new BacklogParseError('MISSING_MILESTONE_EPIC', `${ms.key} has no milestone epic`);
+    if (!ms.epic)
+      throw new BacklogParseError('MISSING_MILESTONE_EPIC', `${ms.key} has no milestone epic`);
     for (const e of [ms.epic, ...ms.epics]) {
       for (const it of [e, ...e.tasks]) {
         if (ids.has(it.id)) throw new BacklogParseError('DUPLICATE_ID', `duplicate id ${it.id}`);
-        if (titles.has(it.title)) throw new BacklogParseError('DUPLICATE_TITLE', `duplicate title "${it.title}"`);
+        if (titles.has(it.title))
+          throw new BacklogParseError('DUPLICATE_TITLE', `duplicate title "${it.title}"`);
         ids.add(it.id);
         titles.add(it.title);
         if (it.issue !== undefined) {
-          if (issues.has(it.issue)) throw new BacklogParseError('DUPLICATE_ISSUE', `#${it.issue} is reused twice (${it.id})`);
+          if (issues.has(it.issue))
+            throw new BacklogParseError(
+              'DUPLICATE_ISSUE',
+              `#${it.issue} is reused twice (${it.id})`,
+            );
           issues.add(it.issue);
         }
         if (it.labels.filter((l) => l.startsWith('edition:')).length !== 1)
@@ -176,12 +215,16 @@ function validate(milestones) {
   }
   for (const t of tasks) {
     const sizes = t.labels.filter((l) => l.startsWith('size:'));
-    if (sizes.length !== 1) throw new BacklogParseError('BAD_SIZE', `${t.id} needs exactly one size label`);
+    if (sizes.length !== 1)
+      throw new BacklogParseError('BAD_SIZE', `${t.id} needs exactly one size label`);
     t.size = sizes[0].slice('size:'.length);
-    if (t.size === 'L') throw new BacklogParseError('SIZE_L', `${t.id} is size:L and must be split`);
-    if (t.acceptance.length === 0) throw new BacklogParseError('MISSING_ACCEPTANCE', `${t.id} has no acceptance criteria`);
+    if (t.size === 'L')
+      throw new BacklogParseError('SIZE_L', `${t.id} is size:L and must be split`);
+    if (t.acceptance.length === 0)
+      throw new BacklogParseError('MISSING_ACCEPTANCE', `${t.id} has no acceptance criteria`);
     for (const d of t.dependsOn) {
-      if (!ids.has(d)) throw new BacklogParseError('UNKNOWN_DEPENDENCY', `${t.id} depends on unknown ${d}`);
+      if (!ids.has(d))
+        throw new BacklogParseError('UNKNOWN_DEPENDENCY', `${t.id} depends on unknown ${d}`);
     }
   }
 }
@@ -214,7 +257,9 @@ const ref = (id, numbers) => (numbers.has(id) ? `#${numbers.get(id)}` : id);
  */
 export function renderTaskBody(task, numbers, epic) {
   const unresolved = [epic.id, ...task.dependsOn].some((id) => !numbers.has(id));
-  const deps = task.dependsOn.length ? `Blocked by ${task.dependsOn.map((d) => ref(d, numbers)).join(', ')}` : 'None';
+  const deps = task.dependsOn.length
+    ? `Blocked by ${task.dependsOn.map((d) => ref(d, numbers)).join(', ')}`
+    : 'None';
   return [
     marker(task.id),
     ...(unresolved ? [PENDING_MARKER] : []),

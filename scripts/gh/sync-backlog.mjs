@@ -38,11 +38,13 @@ const { values: args } = parseArgs({
 });
 const dryRun = args['dry-run'];
 
-const gh = (ghArgs, input) => execFileSync('gh', ghArgs, { encoding: 'utf8', input, maxBuffer: 64 * 1024 * 1024 });
+const gh = (ghArgs, input) =>
+  execFileSync('gh', ghArgs, { encoding: 'utf8', input, maxBuffer: 64 * 1024 * 1024 });
 // GitHub's secondary rate limit punishes bursts of content creation.
 const pause = () => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1200);
 
-const repo = args.repo ?? gh(['repo', 'view', '--json', 'nameWithOwner', '--jq', '.nameWithOwner']).trim();
+const repo =
+  args.repo ?? gh(['repo', 'view', '--json', 'nameWithOwner', '--jq', '.nameWithOwner']).trim();
 const backlog = parseBacklog(readFileSync(args.file, 'utf8'));
 const { epics, tasks } = flatten(backlog);
 const items = [...epics, ...tasks];
@@ -60,7 +62,18 @@ for (const ms of backlog.milestones) {
 
 /** @type {{ number: number, title: string, body: string, labels: { name: string }[], milestone: { title: string } | null }[]} */
 const existing = JSON.parse(
-  gh(['issue', 'list', '--repo', repo, '--state', 'all', '--limit', '2000', '--json', 'number,title,body,labels,milestone']),
+  gh([
+    'issue',
+    'list',
+    '--repo',
+    repo,
+    '--state',
+    'all',
+    '--limit',
+    '2000',
+    '--json',
+    'number,title,body,labels,milestone',
+  ]),
 );
 const issueByNumber = new Map(existing.map((i) => [i.number, i]));
 const bodies = new Map(existing.map((i) => [i.number, i.body]));
@@ -107,7 +120,19 @@ function ensure(item, body) {
     return;
   }
   const url = gh(
-    ['issue', 'create', '--repo', repo, '--title', item.title, '--milestone', item.milestone, '--body-file', '-', ...labelArgs],
+    [
+      'issue',
+      'create',
+      '--repo',
+      repo,
+      '--title',
+      item.title,
+      '--milestone',
+      item.milestone,
+      '--body-file',
+      '-',
+      ...labelArgs,
+    ],
     body,
   ).trim();
   const number = Number(url.split('/').pop());
@@ -145,7 +170,9 @@ const childrenOf = (epic) => {
   return backlog.milestones.find((m) => m.epic === epic)?.epics ?? [];
 };
 const render = (item) =>
-  'tasks' in item ? renderEpicBody(item, childrenOf(item), numbers) : renderTaskBody(item, numbers, epicById.get(item.epicId));
+  'tasks' in item
+    ? renderEpicBody(item, childrenOf(item), numbers)
+    : renderTaskBody(item, numbers, epicById.get(item.epicId));
 
 // Pass 1: create, epics before tasks so tasks can link their epic.
 for (const item of items) ensure(item, render(item));
@@ -166,7 +193,14 @@ if (args.update) {
       add: [...want].filter((l) => !have.has(l)),
       remove: [...have].filter((l) => !want.has(l) && !l.startsWith('status:')),
     };
-    if (change.title || change.body || change.milestone || change.add.length || change.remove.length) edit(number, change, item.id);
+    if (
+      change.title ||
+      change.body ||
+      change.milestone ||
+      change.add.length ||
+      change.remove.length
+    )
+      edit(number, change, item.id);
   }
 }
 
@@ -177,14 +211,22 @@ for (const item of items) {
   if (body.includes(PENDING_MARKER)) {
     edit(number, { body: render(item) }, `${item.id} (resolve refs)`);
   } else if ('tasks' in item && !args.update) {
-    const next = appendMissingChildren(body, childrenOf(item).map((c) => numbers.get(c.id)));
+    const next = appendMissingChildren(
+      body,
+      childrenOf(item).map((c) => numbers.get(c.id)),
+    );
     if (next) edit(number, { body: next }, `${item.id} (task list)`);
   }
 }
 
-const orphans = existing.filter((i) => backlogIdOf(i.body) && ![...numbers.values()].includes(i.number));
-console.log(`\n${dryRun ? '[dry run] ' : ''}created ${stats.created}, matched ${stats.matched}, updated ${stats.updated}`);
-if (orphans.length) console.log(`Not in backlog (left untouched): ${orphans.map((i) => `#${i.number}`).join(', ')}`);
+const orphans = existing.filter(
+  (i) => backlogIdOf(i.body) && ![...numbers.values()].includes(i.number),
+);
+console.log(
+  `\n${dryRun ? '[dry run] ' : ''}created ${stats.created}, matched ${stats.matched}, updated ${stats.updated}`,
+);
+if (orphans.length)
+  console.log(`Not in backlog (left untouched): ${orphans.map((i) => `#${i.number}`).join(', ')}`);
 for (const ms of backlog.milestones) {
   console.log(`${ms.title}: epic #${numbers.get(ms.epic.id)}`);
   for (const e of ms.epics) console.log(`  ${e.title}: #${numbers.get(e.id)}`);
