@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/Yabish/expert-ai/security/advisories/new
+    about: Please report vulnerabilities privately, never in a public issue. See SECURITY.md.
+  - name: Product specification
+    url: https://github.com/Yabish/expert-ai/blob/develop/docs/SPEC.md
+    about: Check what we are building before proposing a feature.

@@ -1,0 +1,75 @@
+name: Bug report
+description: Something does not work as documented.
+title: 'fix: '
+labels: ['type:bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Security issue?** Do not file it here. Use a [private advisory](https://github.com/Yabish/expert-ai/security/advisories/new) instead, for example a query-guard bypass, credential exposure or SSRF.
+
+        Never paste secrets, connection strings or real customer data.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Ideally against the docker dev stack and sample dataset.
+      placeholder: |
+        1. Start the dev stack
+        2. Ask "..."
+        3. See error
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Deployment mode
+      options:
+        - Lite
+        - Full
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Data source and version
+      description: Include the ERP product and version, and the active domain pack and version, if any.
+      placeholder: 'Odoo <version> on PostgreSQL <version>, pack odoo <version> / custom POS on SQL Server <version>'
+  - type: dropdown
+    id: language
+    attributes:
+      label: Question language
+      options:
+        - English
+        - Arabic
+        - Both / not language-specific
+  - type: input
+    id: provider
+    attributes:
+      label: AI provider and model
+      placeholder: 'Ollama / qwen3, OpenAI / ...'
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Redact secrets and data first.
+      render: shell

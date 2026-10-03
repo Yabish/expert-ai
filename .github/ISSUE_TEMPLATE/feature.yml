@@ -1,0 +1,76 @@
+name: Feature request
+description: Propose a new capability or a change in behaviour.
+title: 'feat: '
+labels: ['type:feature']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea. Check [`docs/SPEC.md`](https://github.com/Yabish/expert-ai/blob/develop/docs/SPEC.md) first: it is the source of truth for what we build. A maintainer turns accepted requests into sized tasks.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do, and what gets in the way today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should happen? Include examples, such as questions, data sources or providers.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: input
+    id: spec
+    attributes:
+      label: Related SPEC sections
+      placeholder: '§3.2, §6.4'
+  - type: dropdown
+    id: edition
+    attributes:
+      label: Edition
+      description: Community (open source) or Enterprise (SPEC §3.1). Maintainers make the final call.
+      options:
+        - Community
+        - Enterprise
+        - Not sure
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - core (agent, prompts)
+        - connectors
+        - query guard
+        - providers
+        - domain packs (Odoo, ERPNext, custom)
+        - Arabic / GCC (Hijri, VAT, RTL)
+        - knowledge / semantic layer
+        - storage
+        - charts
+        - exporters
+        - web UI
+        - i18n / RTL
+        - evals
+        - docker / deployment
+        - docs
+        - other
+    validations:
+      required: true
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Principles
+      description: Features must respect the non-negotiable principles (SPEC §2).
+      options:
+        - label: This keeps data access read-only and does not send raw result sets to the LLM.
+          required: true
+        - label: This works for Arabic users (language, RTL, numerals), or I've explained why it doesn't apply.
+          required: true
