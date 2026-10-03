@@ -8,17 +8,19 @@
 
 ### [E0] M0 Foundation
 
-- **Labels:** type:epic, priority:p0
+- **Issue:** #1
+- **Labels:** type:epic, edition:community, priority:p0
 - **Goal:** Foundation.
 
 ### [E0.1] Repository scaffold
 
-- **Labels:** type:epic, area:repo, priority:p0
+- **Labels:** type:epic, area:repo, edition:community, priority:p0
 - **Goal:** Scaffold.
 
 #### [T0.1] First task
 
-- **Labels:** type:chore, area:repo, priority:p0, size:M
+- **Issue:** #41
+- **Labels:** type:chore, area:repo, edition:community, priority:p0, size:M
 - **SPEC:** §14
 - **Depends on:** none
 - **Goal:** Do the first thing.
@@ -28,7 +30,7 @@
 
 #### [T0.2] Second task
 
-- **Labels:** type:build, area:repo, priority:p1, size:S
+- **Labels:** type:build, area:repo, edition:community, pillar:erp, priority:p1, size:S
 - **SPEC:** §10, §13
 - **Depends on:** T0.1, T1.1
 - **Goal:** Do the second thing.
@@ -43,17 +45,17 @@
 
 ### [E1] M1 Engine core
 
-- **Labels:** type:epic, priority:p0
+- **Labels:** type:epic, edition:community, priority:p0
 - **Goal:** Engine.
 
 ### [E1.1] Contracts
 
-- **Labels:** type:epic, area:contracts, priority:p0
+- **Labels:** type:epic, area:contracts, edition:enterprise, priority:p0
 - **Goal:** Contracts.
 
 #### [T1.1] Contracts task
 
-- **Labels:** type:feature, area:contracts, priority:p0, size:M
+- **Labels:** type:feature, area:contracts, edition:enterprise, priority:p0, size:M
 - **Depends on:** none
 - **Goal:** Contracts goal.
 - **Acceptance:**

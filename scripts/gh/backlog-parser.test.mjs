@@ -42,7 +42,7 @@ describe('parseBacklog', () => {
     assert.deepEqual(t, {
       id: 'T0.2',
       title: 'Second task',
-      labels: ['type:build', 'area:repo', 'priority:p1', 'size:S'],
+      labels: ['type:build', 'area:repo', 'edition:community', 'pillar:erp', 'priority:p1', 'size:S'],
       spec: '§10, §13',
       dependsOn: ['T0.1', 'T1.1'],
       goal: 'Do the second thing.',
@@ -52,6 +52,12 @@ describe('parseBacklog', () => {
       epicId: 'E0.1',
       milestone: 'M0 Foundation',
     });
+  });
+
+  it('reads reused issue numbers', () => {
+    assert.equal(backlog.milestones[0].epic?.issue, 1);
+    assert.equal(tasks.find((x) => x.id === 'T0.1')?.issue, 41);
+    assert.equal(tasks.find((x) => x.id === 'T0.2')?.issue, undefined);
   });
 
   it('treats "none" dependencies as empty', () => {
@@ -68,18 +74,18 @@ describe('parseBacklog validation', () => {
 
 ### [E0] Milestone
 
-- **Labels:** type:epic
+- **Labels:** type:epic, edition:community
 - **Goal:** g
 
 ### [E0.1] Epic
 
-- **Labels:** type:epic
+- **Labels:** type:epic, edition:community
 - **Goal:** g
 
 ${task}`;
   const task = (fields) => `#### [T0.1] Task
 
-- **Labels:** ${fields.labels ?? 'type:chore, size:S'}
+${fields.issue ? `- **Issue:** ${fields.issue}\n` : ''}- **Labels:** ${fields.labels ?? 'type:chore, edition:community, size:S'}
 - **Depends on:** ${fields.deps ?? 'none'}
 - **Goal:** ${fields.goal ?? 'g'}
 - **Acceptance:**
@@ -89,19 +95,28 @@ ${fields.acceptance ?? '  - [ ] works'}
   it('accepts a minimal valid backlog', () => {
     assert.equal(flatten(parseBacklog(base(task({})))).tasks.length, 1);
   });
-  it('rejects size:L', () => expectCode(base(task({ labels: 'size:L' })), 'SIZE_L'));
-  it('rejects a missing size', () => expectCode(base(task({ labels: 'type:chore' })), 'BAD_SIZE'));
+  it('rejects size:L', () => expectCode(base(task({ labels: 'edition:community, size:L' })), 'SIZE_L'));
+  it('rejects a missing size', () => expectCode(base(task({ labels: 'type:chore, edition:community' })), 'BAD_SIZE'));
+  it('rejects a missing edition', () => expectCode(base(task({ labels: 'type:chore, size:S' })), 'BAD_EDITION'));
+  it('rejects two editions', () =>
+    expectCode(base(task({ labels: 'edition:community, edition:enterprise, size:S' })), 'BAD_EDITION'));
+  it('rejects malformed issue references', () => expectCode(base(task({ issue: '41' })), 'BAD_ISSUE'));
+  it('rejects an issue reused twice', () =>
+    expectCode(base(task({ issue: '#41' }) + task({ issue: '#41' }).replace('[T0.1] Task', '[T0.2] Other')), 'DUPLICATE_ISSUE'));
   it('rejects unknown dependencies', () => expectCode(base(task({ deps: 'T7.7' })), 'UNKNOWN_DEPENDENCY'));
   it('rejects missing acceptance', () => expectCode(base(task({ acceptance: '' })), 'MISSING_ACCEPTANCE'));
   it('rejects missing goal', () => expectCode(base(task({ goal: '' })), 'MISSING_GOAL'));
   it('rejects unknown fields', () => expectCode(base(`${task({})}- **Owner:** me\n`), 'UNKNOWN_FIELD'));
   it('rejects tasks directly under a milestone epic', () =>
-    expectCode('## M0 X\n\n### [E0] M\n\n- **Labels:** type:epic\n- **Goal:** g\n\n#### [T0.1] T\n', 'TASK_OUTSIDE_EPIC'));
+    expectCode('## M0 X\n\n### [E0] M\n\n- **Labels:** type:epic, edition:community\n- **Goal:** g\n\n#### [T0.1] T\n', 'TASK_OUTSIDE_EPIC'));
   it('rejects epics outside milestones', () => expectCode('### [E0.1] Lost\n', 'EPIC_OUTSIDE_MILESTONE'));
   it('rejects a milestone without its epic', () => expectCode('## M0 Foundation\n', 'MISSING_MILESTONE_EPIC'));
   it('rejects duplicate ids', () => expectCode(base(task({}) + task({}).replace('] Task', '] Other')), 'DUPLICATE_ID'));
   it('rejects epics without type:epic', () =>
-    expectCode(base(task({})).replace('- **Labels:** type:epic\n- **Goal:** g\n\n#### ', '- **Labels:** area:x\n- **Goal:** g\n\n#### '), 'EPIC_WITHOUT_LABEL'));
+    expectCode(
+      base(task({})).replace('- **Labels:** type:epic, edition:community\n- **Goal:** g\n\n#### ', '- **Labels:** area:x, edition:community\n- **Goal:** g\n\n#### '),
+      'EPIC_WITHOUT_LABEL',
+    ));
 });
 
 describe('rendering', () => {

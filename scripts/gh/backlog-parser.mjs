@@ -31,8 +31,8 @@ const splitList = (value) =>
  * @returns {{ milestones: Milestone[] }}
  *
  * @typedef {{ key: string, title: string, epic: Epic | null, epics: Epic[] }} Milestone
- * @typedef {{ id: string, title: string, labels: string[], goal: string, milestone: string, tasks: Task[], isMilestoneEpic: boolean }} Epic
- * @typedef {{ id: string, title: string, labels: string[], spec: string, dependsOn: string[], goal: string, acceptance: string[], outOfScope: string, size: string, epicId: string, milestone: string }} Task
+ * @typedef {{ id: string, title: string, issue?: number, labels: string[], goal: string, milestone: string, tasks: Task[], isMilestoneEpic: boolean }} Epic
+ * @typedef {{ id: string, title: string, issue?: number, labels: string[], spec: string, dependsOn: string[], goal: string, acceptance: string[], outOfScope: string, size: string, epicId: string, milestone: string }} Task
  */
 export function parseBacklog(markdown) {
   /** @type {Milestone[]} */
@@ -109,6 +109,12 @@ export function parseBacklog(markdown) {
         case 'Labels':
           item.labels = splitList(value);
           break;
+        case 'Issue': {
+          const issue = /^#(\d+)$/.exec(value.trim());
+          if (!issue) throw new BacklogParseError('BAD_ISSUE', `Issue must look like #123, got "${value}"`, lineNo);
+          item.issue = Number(issue[1]);
+          break;
+        }
         case 'Goal':
           item.goal = value;
           break;
@@ -145,6 +151,7 @@ export function parseBacklog(markdown) {
 function validate(milestones) {
   const ids = new Set();
   const titles = new Set();
+  const issues = new Set();
   const tasks = [];
   for (const ms of milestones) {
     if (!ms.epic) throw new BacklogParseError('MISSING_MILESTONE_EPIC', `${ms.key} has no milestone epic`);
@@ -154,6 +161,12 @@ function validate(milestones) {
         if (titles.has(it.title)) throw new BacklogParseError('DUPLICATE_TITLE', `duplicate title "${it.title}"`);
         ids.add(it.id);
         titles.add(it.title);
+        if (it.issue !== undefined) {
+          if (issues.has(it.issue)) throw new BacklogParseError('DUPLICATE_ISSUE', `#${it.issue} is reused twice (${it.id})`);
+          issues.add(it.issue);
+        }
+        if (it.labels.filter((l) => l.startsWith('edition:')).length !== 1)
+          throw new BacklogParseError('BAD_EDITION', `${it.id} needs exactly one edition label`);
         if (!it.goal) throw new BacklogParseError('MISSING_GOAL', `${it.id} has no goal`);
         if (!it.labels.includes('type:epic') && it === e)
           throw new BacklogParseError('EPIC_WITHOUT_LABEL', `${it.id} must be labelled type:epic`);
