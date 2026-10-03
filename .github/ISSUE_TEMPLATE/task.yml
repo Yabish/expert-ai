@@ -10,7 +10,7 @@ body:
     attributes:
       label: Context
       description: Why this task exists. Link the epic.
-      placeholder: "Part of epic #N ..."
+      placeholder: 'Part of epic #N ...'
     validations:
       required: true
   - type: textarea
@@ -26,7 +26,7 @@ body:
       label: Acceptance criteria
       description: Testable checkboxes. User-facing work needs at least one Arabic criterion (CLAUDE.md rule 9). Pack work must name the ERP version its facts were verified on.
       value: |
-        - [ ] 
+        - [ ]
     validations:
       required: true
   - type: textarea
@@ -39,14 +39,14 @@ body:
     id: spec
     attributes:
       label: SPEC sections
-      placeholder: "§5.1, §5.4"
+      placeholder: '§5.1, §5.4'
     validations:
       required: true
   - type: input
     id: dependencies
     attributes:
       label: Dependencies
-      placeholder: "Blocked by #N, or None"
+      placeholder: 'Blocked by #N, or None'
     validations:
       required: true
   - type: dropdown

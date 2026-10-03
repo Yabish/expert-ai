@@ -1,7 +1,7 @@
 name: Feature request
 description: Propose a new capability or a change in behaviour.
-title: "feat: "
-labels: ["type:feature"]
+title: 'feat: '
+labels: ['type:feature']
 body:
   - type: markdown
     attributes:
@@ -29,7 +29,7 @@ body:
     id: spec
     attributes:
       label: Related SPEC sections
-      placeholder: "§3.2, §6.4"
+      placeholder: '§3.2, §6.4'
   - type: dropdown
     id: edition
     attributes:

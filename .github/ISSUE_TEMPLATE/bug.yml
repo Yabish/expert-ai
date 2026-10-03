@@ -1,7 +1,7 @@
 name: Bug report
 description: Something does not work as documented.
-title: "fix: "
-labels: ["type:bug"]
+title: 'fix: '
+labels: ['type:bug']
 body:
   - type: markdown
     attributes:
@@ -53,7 +53,7 @@ body:
     attributes:
       label: Data source and version
       description: Include the ERP product and version, and the active domain pack and version, if any.
-      placeholder: "Odoo <version> on PostgreSQL <version>, pack odoo <version> / custom POS on SQL Server <version>"
+      placeholder: 'Odoo <version> on PostgreSQL <version>, pack odoo <version> / custom POS on SQL Server <version>'
   - type: dropdown
     id: language
     attributes:
@@ -66,7 +66,7 @@ body:
     id: provider
     attributes:
       label: AI provider and model
-      placeholder: "Ollama / qwen3, OpenAI / ..."
+      placeholder: 'Ollama / qwen3, OpenAI / ...'
   - type: textarea
     id: logs
     attributes:
