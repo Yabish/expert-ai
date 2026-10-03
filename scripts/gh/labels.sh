@@ -37,6 +37,14 @@ LABELS=(
   "area:docker|5319e7|docker/ dev stack and images"
   "area:security|b60205|Auth, secrets, SSRF, hardening"
   "area:docs|5319e7|Documentation"
+  "area:packs|5319e7|packs/ and packs-ee/: domain packs, loader, builder"
+  "area:calendar|5319e7|packages/calendar: Hijri, events, periods"
+  "area:ee|5319e7|ee/: Enterprise code and the open-core boundary"
+  "edition:community|0e8a16|Community (open source) edition"
+  "edition:enterprise|5319e7|Enterprise (commercial) edition: ee/ or packs-ee/"
+  "pillar:erp|1d76db|Advances the ERP-native pillar (domain packs)"
+  "pillar:gcc|006b75|Advances the Arabic and GCC-native pillar"
+  "pillar:privacy|0b3d91|Advances the private-by-design pillar"
   "priority:p0|b60205|Blocks the milestone"
   "priority:p1|d93f0b|Important for the milestone"
   "priority:p2|fbca04|Nice to have in the milestone"
@@ -47,7 +55,8 @@ LABELS=(
   "status:in-progress|0e8a16|Being worked on"
   "status:blocked|b60205|Waiting on something"
   "status:needs-review|fbca04|PR open, awaiting review"
-  "ci:oracle|f9d0c4|Run the Oracle integration job on this PR"
+  "ci:packs|f9d0c4|Run pack evals against the ERP demo instances on this PR"
+  "ci:oracle|f9d0c4|Run the Oracle integration job on this PR (M6)"
 )
 
 existing="$(gh label list --repo "$REPO" --limit 500 --json name,color,description \
