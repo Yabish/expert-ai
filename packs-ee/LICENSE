@@ -1,0 +1,13 @@
+expert-ai Enterprise Packs License
+Status: PLACEHOLDER. Commercial license, terms to be determined.
+
+Copyright (c) 2026 Yabish Arfath. All rights reserved.
+
+The files in this directory (packs-ee/) are NOT open source and are NOT covered
+by the AGPL-3.0 license that applies to the rest of this repository.
+
+Until commercial terms are published here, no license is granted to use,
+copy, modify, distribute or create derivative works of these files, except
+for viewing them as part of this public repository.
+
+See docs/adr/0002-licensing.md.
