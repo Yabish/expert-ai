@@ -58,6 +58,8 @@
       "Bash(pnpm format *)",
       "Bash(pnpm format:check *)",
       "Bash(pnpm evals *)",
+      "Bash(pnpm packs:eval *)",
+      "Bash(pnpm packs:verify *)",
       "Bash(pnpm db:seed *)",
       "Bash(pnpm view *)",
       "Bash(docker compose *)"
