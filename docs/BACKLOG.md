@@ -1,6 +1,6 @@
 # Backlog
 
-> **Status: DRAFT re-plan for the 2026-10-03 spec revision (#169), pending approval.**
+> **Status: approved 2026-10-04 (re-plan for the 2026-10-03 spec revision, #169) and synced to GitHub.**
 > `scripts/gh/sync-backlog.mjs` turns this file into GitHub issues. After sync, GitHub issues are the source of truth.
 
 ## Format (parsed by `scripts/gh/sync-backlog.mjs`)
