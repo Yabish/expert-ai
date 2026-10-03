@@ -7,3 +7,4 @@ To add one: copy [`template.md`](template.md) to the next free number, fill it i
 | # | Title | Status |
 |---|---|---|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
+| [0003](0003-erp-first-open-core-repositioning.md) | Reposition as an ERP-first, Arabic/GCC-native, open-core analyst | Accepted |
