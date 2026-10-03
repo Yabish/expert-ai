@@ -3,38 +3,32 @@
   "agentGuidance": false,
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "typecheck": {
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "lint": {
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": []
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
     },
     "test:integration": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "cache": false
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "//#lint:root": {
+      "inputs": ["scripts/**", "*.config.mjs", "packages/config/eslint.config.mjs"]
+    },
+    "//#test:scripts": {
+      "inputs": ["scripts/**", "docs/BACKLOG.md"]
     }
   }
 }
