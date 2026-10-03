@@ -24,7 +24,9 @@
       "dependsOn": [
         "^build"
       ],
-      "outputs": []
+      "outputs": [
+        "coverage/**"
+      ]
     },
     "test:integration": {
       "dependsOn": [
@@ -35,6 +37,19 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "//#lint:root": {
+      "inputs": [
+        "scripts/**",
+        "*.config.mjs",
+        "packages/config/eslint.config.mjs"
+      ]
+    },
+    "//#test:scripts": {
+      "inputs": [
+        "scripts/**",
+        "docs/BACKLOG.md"
+      ]
     }
   }
 }
