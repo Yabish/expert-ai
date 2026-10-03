@@ -2,7 +2,7 @@
   "name": "@expert-ai/evals",
   "version": "0.0.0",
   "private": true,
-  "description": "Golden-question runner and reports",
+  "description": "Golden runner, pack evals and model comparison reports",
   "license": "AGPL-3.0-only",
   "type": "module",
   "exports": {

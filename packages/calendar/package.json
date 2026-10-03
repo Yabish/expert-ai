@@ -1,8 +1,8 @@
 {
-  "name": "@expert-ai/knowledge",
+  "name": "@expert-ai/calendar",
   "version": "0.0.0",
   "private": true,
-  "description": "Introspection, profiling, semantic layer, retrieval, pack loader and detection",
+  "description": "Hijri conversion, events calendar and period resolution",
   "license": "AGPL-3.0-only",
   "type": "module",
   "exports": {

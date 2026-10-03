@@ -2,7 +2,7 @@
   "name": "@expert-ai/i18n",
   "version": "0.0.0",
   "private": true,
-  "description": "English and Arabic message catalogs and RTL helpers",
+  "description": "English and Arabic message catalogs, RTL helpers and numeral handling",
   "license": "AGPL-3.0-only",
   "type": "module",
   "exports": {
