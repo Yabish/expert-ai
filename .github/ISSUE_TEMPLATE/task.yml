@@ -1,0 +1,81 @@
+name: Task
+description: A sized unit of work (S or M) that belongs to a milestone and an epic. Mostly for maintainers.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tasks follow CLAUDE.md: size S or M only (split anything larger), testable acceptance criteria, and SPEC references. Add `type:*`, `area:*`, `edition:*`, `pillar:*` (when relevant), `priority:*` and `size:*` labels, set the milestone, and add the task to its epic's task list. Breadth work (Oracle, MongoDB, SQLite, cloud-native provider auth) belongs to M6 and isn't started before v0.2.0.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why this task exists. Link the epic.
+      placeholder: "Part of epic #N ..."
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: One or two sentences on the outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Testable checkboxes. User-facing work needs at least one Arabic criterion (CLAUDE.md rule 9). Pack work must name the ERP version its facts were verified on.
+      value: |
+        - [ ] 
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+    validations:
+      required: true
+  - type: input
+    id: spec
+    attributes:
+      label: SPEC sections
+      placeholder: "§5.1, §5.4"
+    validations:
+      required: true
+  - type: input
+    id: dependencies
+    attributes:
+      label: Dependencies
+      placeholder: "Blocked by #N, or None"
+    validations:
+      required: true
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      options:
+        - S (up to half a day)
+        - M (up to one focused day)
+    validations:
+      required: true
+  - type: dropdown
+    id: edition
+    attributes:
+      label: Edition
+      description: Unsure? Ask before starting. Moving functionality between editions is a maintainer decision.
+      options:
+        - Community
+        - Enterprise (ee/ or packs-ee/)
+    validations:
+      required: true
+  - type: dropdown
+    id: pillar
+    attributes:
+      label: Pillar
+      description: Which differentiation pillar this advances (SPEC §1.2), if any.
+      multiple: true
+      options:
+        - ERP-native (domain packs)
+        - Arabic and GCC-native
+        - Private by design
+        - None
