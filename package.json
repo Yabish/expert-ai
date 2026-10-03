@@ -1,0 +1,32 @@
+{
+  "name": "expert-ai",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Open-source, self-hostable AI data analyst",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "packageManager": "pnpm@12.8.1",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": ">=12"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint lint:root",
+    "lint:root": "eslint scripts *.config.mjs",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test test:scripts",
+    "test:scripts": "node --test \"scripts/gh/*.test.mjs\"",
+    "test:integration": "turbo run test:integration",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@expert-ai/config": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:"
+  }
+}

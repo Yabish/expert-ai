@@ -1,0 +1,52 @@
+name: PR title
+
+# The PR title becomes the squash commit, so it must be a Conventional
+# Commit (CLAUDE.md). pull_request_target is safe here: the action only
+# reads the title through the API and never checks out PR code.
+on:
+  pull_request_target:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Regex patterns, auto-wrapped in ^ $. Keep in sync with CLAUDE.md.
+          types: |
+            feat
+            fix
+            refactor
+            perf
+            test
+            docs
+            chore
+            ci
+            build
+          scopes: |
+            core
+            connectors
+            guard
+            providers
+            knowledge
+            packs
+            packs/[a-z0-9-]+
+            calendar
+            storage
+            charts
+            exporters
+            web
+            i18n
+            evals
+            ee
+            repo
+            ci
+          requireScope: true

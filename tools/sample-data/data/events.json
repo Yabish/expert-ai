@@ -1,0 +1,61 @@
+{
+  "$comment": "Event definitions as data. Hijri events resolve through the Umm al-Qura calendar; nothing is a hard-coded date. Intended to move into packages/calendar (T3.22).",
+  "version": 1,
+  "events": [
+    { "id": "ramadan", "nameEn": "Ramadan", "nameAr": "رمضان", "kind": "hijri-month", "month": 9 },
+    {
+      "id": "eid-al-fitr",
+      "nameEn": "Eid al-Fitr",
+      "nameAr": "عيد الفطر",
+      "kind": "hijri-date",
+      "month": 10,
+      "day": 1,
+      "durationDays": 4
+    },
+    {
+      "id": "eid-al-adha",
+      "nameEn": "Eid al-Adha",
+      "nameAr": "عيد الأضحى",
+      "kind": "hijri-date",
+      "month": 12,
+      "day": 10,
+      "durationDays": 4
+    },
+    {
+      "id": "founding-day",
+      "nameEn": "Founding Day",
+      "nameAr": "يوم التأسيس",
+      "kind": "gregorian-date",
+      "month": 2,
+      "day": 22,
+      "durationDays": 1
+    },
+    {
+      "id": "national-day",
+      "nameEn": "Saudi National Day",
+      "nameAr": "اليوم الوطني",
+      "kind": "gregorian-date",
+      "month": 9,
+      "day": 23,
+      "durationDays": 1
+    },
+    {
+      "id": "white-friday",
+      "nameEn": "White Friday",
+      "nameAr": "الجمعة البيضاء",
+      "kind": "last-weekday-of-month",
+      "month": 11,
+      "weekday": 5,
+      "durationDays": 3
+    },
+    {
+      "id": "back-to-school",
+      "nameEn": "Back to school",
+      "nameAr": "العودة إلى المدارس",
+      "kind": "gregorian-date",
+      "month": 8,
+      "day": 10,
+      "durationDays": 21
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+# Generated or vendored
+pnpm-lock.yaml
+**/dist/
+**/coverage/
+**/.turbo/
+**/.next/
+
+# Maintainer-owned documents: reformat only through their own PRs.
+docs/SPEC.md
+CLAUDE.md

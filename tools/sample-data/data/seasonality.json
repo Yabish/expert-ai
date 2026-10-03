@@ -1,0 +1,29 @@
+{
+  "$comment": "Retail demand shaping for the synthetic dataset. Multipliers apply on top of a base daily order rate. weekdayFactors index 0 = Sunday.",
+  "version": 1,
+  "weekdayFactors": [1.0, 0.95, 0.95, 1.0, 1.3, 1.4, 1.15],
+  "events": {
+    "ramadan": {
+      "traffic": 1.25,
+      "eveningShift": true,
+      "categories": { "food": 1.8, "sweets": 2.2, "beverages": 1.6 }
+    },
+    "eid-al-fitr": {
+      "traffic": 1.6,
+      "categories": { "apparel": 2.4, "gifts": 2.6, "sweets": 1.8 }
+    },
+    "eid-al-adha": { "traffic": 1.4, "categories": { "food": 1.7, "apparel": 1.6, "gifts": 1.8 } },
+    "founding-day": { "traffic": 1.2, "categories": { "apparel": 1.4 } },
+    "national-day": { "traffic": 1.4, "categories": { "apparel": 1.6, "gifts": 1.4 } },
+    "white-friday": { "traffic": 2.2, "categories": { "electronics": 3.0, "home": 1.8 } },
+    "back-to-school": { "traffic": 1.15, "categories": { "stationery": 2.8, "apparel": 1.3 } }
+  },
+  "returns": {
+    "baseRate": 0.03,
+    "spikeAfterEvent": "white-friday",
+    "spikeDays": 21,
+    "spikeRate": 0.09
+  },
+  "cancellationRate": 0.03,
+  "promoLift": 1.5
+}
