@@ -1,0 +1,35 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests", ":semanticCommits"],
+  "baseBranchPatterns": ["develop"],
+  "timezone": "Asia/Riyadh",
+  "schedule": ["before 6am on monday"],
+  "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 5,
+  "semanticCommitType": "build",
+  "semanticCommitScope": "repo",
+  "labels": ["type:build", "area:repo", "edition:community"],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "description": "Actions are pinned to digests; group their updates and title them for the ci scope.",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "semanticCommitType": "ci",
+      "semanticCommitScope": "ci",
+      "labels": ["type:ci", "area:ci", "edition:community"]
+    },
+    {
+      "description": "Dev stack images: pinned tags, reviewed together.",
+      "matchManagers": ["docker-compose"],
+      "groupName": "dev stack images"
+    },
+    {
+      "description": "typescript-eslint supports TypeScript <6.1.0; lift once it supports 7.x.",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<6.1.0"
+    }
+  ]
+}
