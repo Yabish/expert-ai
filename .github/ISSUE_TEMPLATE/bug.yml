@@ -52,7 +52,16 @@ body:
     id: source
     attributes:
       label: Data source and version
-      placeholder: "PostgreSQL 17, MongoDB 8, ..."
+      description: Include the ERP product and version, and the active domain pack and version, if any.
+      placeholder: "Odoo <version> on PostgreSQL <version>, pack odoo <version> / custom POS on SQL Server <version>"
+  - type: dropdown
+    id: language
+    attributes:
+      label: Question language
+      options:
+        - English
+        - Arabic
+        - Both / not language-specific
   - type: input
     id: provider
     attributes:

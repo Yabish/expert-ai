@@ -31,6 +31,17 @@ body:
       label: Related SPEC sections
       placeholder: "§3.2, §6.4"
   - type: dropdown
+    id: edition
+    attributes:
+      label: Edition
+      description: Community (open source) or Enterprise (SPEC §3.1). Maintainers make the final call.
+      options:
+        - Community
+        - Enterprise
+        - Not sure
+    validations:
+      required: true
+  - type: dropdown
     id: area
     attributes:
       label: Area
@@ -39,6 +50,8 @@ body:
         - connectors
         - query guard
         - providers
+        - domain packs (Odoo, ERPNext, custom)
+        - Arabic / GCC (Hijri, VAT, RTL)
         - knowledge / semantic layer
         - storage
         - charts
@@ -58,4 +71,6 @@ body:
       description: Features must respect the non-negotiable principles (SPEC §2).
       options:
         - label: This keeps data access read-only and does not send raw result sets to the LLM.
+          required: true
+        - label: This works for Arabic users (language, RTL, numerals), or I've explained why it doesn't apply.
           required: true

@@ -6,6 +6,10 @@
 
 Closes #
 
+## Edition
+
+<!-- Community or Enterprise (ee/ or packs-ee/). Community code must never import from ee/ or packs-ee/. -->
+
 ## Changes
 
 -
@@ -16,7 +20,9 @@ Closes #
 
 ## Eval results
 
-<!-- Required if prompts, retrieval or the agent changed: before/after table from `pnpm evals`. Otherwise "Not applicable". -->
+<!-- Required if prompts, retrieval, the agent or a pack changed: before/after table from `pnpm evals`.
+     Pack PRs: that pack's golden accuracy before and after, in English and Arabic, from `pnpm packs:eval`.
+     Otherwise "Not applicable". -->
 
 ## Screenshots
 
@@ -31,7 +37,9 @@ Closes #
 - [ ] All acceptance criteria are met and checked in the issue
 - [ ] `pnpm lint && pnpm typecheck && pnpm test` pass locally
 - [ ] New logic has tests; guard changes include adversarial fixtures
-- [ ] No new `any`, no hard-coded UI strings, RTL checked for UI work
+- [ ] No new `any`, no hard-coded UI strings, RTL checked for UI work, Arabic acceptance criterion met
+- [ ] No Community → `ee/` or `packs-ee/` imports; edition label correct
+- [ ] Pack facts verified against a running ERP instance (`--profile erp`); golden questions added for new metrics (English and Arabic)
 - [ ] Docs updated (README, `docs/`, CLAUDE.md Commands if scripts changed)
 - [ ] ADR added for hard-to-reverse decisions
 - [ ] No secrets, `.env*` contents or real data in code, logs or this PR

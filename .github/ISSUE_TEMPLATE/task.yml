@@ -4,7 +4,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Tasks follow CLAUDE.md: size S or M only (split anything larger), testable acceptance criteria, and SPEC references. Add `type:*`, `area:*`, `priority:*` and `size:*` labels, set the milestone, and add the task to its epic's task list.
+        Tasks follow CLAUDE.md: size S or M only (split anything larger), testable acceptance criteria, and SPEC references. Add `type:*`, `area:*`, `edition:*`, `pillar:*` (when relevant), `priority:*` and `size:*` labels, set the milestone, and add the task to its epic's task list. Breadth work (Oracle, MongoDB, SQLite, cloud-native provider auth) belongs to M6 and isn't started before v0.2.0.
   - type: textarea
     id: context
     attributes:
@@ -24,7 +24,7 @@ body:
     id: acceptance
     attributes:
       label: Acceptance criteria
-      description: Testable checkboxes.
+      description: Testable checkboxes. User-facing work needs at least one Arabic criterion (CLAUDE.md rule 9). Pack work must name the ERP version its facts were verified on.
       value: |
         - [ ] 
     validations:
@@ -58,3 +58,24 @@ body:
         - M (up to one focused day)
     validations:
       required: true
+  - type: dropdown
+    id: edition
+    attributes:
+      label: Edition
+      description: Unsure? Ask before starting. Moving functionality between editions is a maintainer decision.
+      options:
+        - Community
+        - Enterprise (ee/ or packs-ee/)
+    validations:
+      required: true
+  - type: dropdown
+    id: pillar
+    attributes:
+      label: Pillar
+      description: Which differentiation pillar this advances (SPEC §1.2), if any.
+      multiple: true
+      options:
+        - ERP-native (domain packs)
+        - Arabic and GCC-native
+        - Private by design
+        - None
