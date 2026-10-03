@@ -17,11 +17,7 @@
       "Bash(git push *:develop)",
       "Bash(gh repo delete *)"
     ],
-    "ask": [
-      "Bash(gh pr merge *)",
-      "Bash(pnpm add *)",
-      "Bash(pnpm remove *)"
-    ],
+    "ask": ["Bash(gh pr merge *)", "Bash(pnpm add *)", "Bash(pnpm remove *)"],
     "allow": [
       "Bash(git add *)",
       "Bash(git commit *)",
