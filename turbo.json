@@ -25,7 +25,7 @@
       "persistent": true
     },
     "//#lint:root": {
-      "inputs": ["scripts/**", "*.config.mjs", "packages/config/eslint.config.mjs"]
+      "inputs": ["scripts/**", "*.config.mjs", "packages/config/eslint.preset.mjs"]
     },
     "//#test:scripts": {
       "inputs": ["scripts/**", "docs/BACKLOG.md"]

@@ -7,8 +7,8 @@
   "type": "module",
   "exports": {
     "./tsconfig.base.json": "./tsconfig.base.json",
-    "./eslint": "./eslint.config.mjs",
-    "./prettier": "./prettier.config.mjs",
+    "./eslint": "./eslint.preset.mjs",
+    "./prettier": "./prettier.preset.mjs",
     "./vitest": "./vitest.preset.mjs"
   },
   "dependencies": {
