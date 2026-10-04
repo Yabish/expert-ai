@@ -7,14 +7,22 @@
   "type": "module",
   "exports": {
     "./tsconfig.base.json": "./tsconfig.base.json",
-    "./eslint": "./eslint.config.mjs",
-    "./prettier": "./prettier.config.mjs",
+    "./eslint": "./eslint.preset.mjs",
+    "./prettier": "./prettier.preset.mjs",
     "./vitest": "./vitest.preset.mjs"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "vitest run"
   },
   "dependencies": {
     "@eslint/js": "catalog:",
     "globals": "catalog:",
     "typescript-eslint": "catalog:"
+  },
+  "devDependencies": {
+    "eslint": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "eslint": "catalog:",
