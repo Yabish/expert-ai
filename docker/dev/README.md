@@ -1,6 +1,6 @@
 # Dev stack
 
-The v0.1 data sources (SPEC §7.2) for local development and integration tests. Each database has a `retail` database, an owner user, and a least-privilege read-only user that the app connects as. The Odoo and ERPNext demo instances will join under the `erp` profile.
+The v0.1 data sources (SPEC §7.2) for local development and integration tests. Each database has a `retail` database, an owner user, and a least-privilege read-only user that the app connects as. The ERP demo instances run under the `erp` profile: Odoo today, ERPNext next (T0.15).
 
 ```sh
 cp docker/dev/.env.example docker/dev/.env      # dev-only credentials, gitignored
@@ -24,6 +24,41 @@ Compose refuses to start without `docker/dev/.env`, so no database ever runs wit
 
 Start a subset when memory is tight: `docker compose -f docker/dev/compose.yml up -d postgres mariadb`.
 
+## Odoo demo instance (`erp` profile)
+
+The pack evals (SPEC §5.5) and every Odoo pack fact (SPEC §5.3) are checked against this instance.
+
+```sh
+docker compose -f docker/dev/compose.yml --profile erp up -d --wait odoo   # Odoo only
+docker compose -f docker/dev/compose.yml --profile erp up -d --wait        # everything
+```
+
+| Service | Image | Host port (`.env`) | Notes |
+|---|---|---|---|
+| `odoo-db` | `postgres:18.6` | `127.0.0.1:5433` (`ODOO_DB_PORT`) | Its own Postgres; superuser `odoo` (`ODOO_DB_PASSWORD`). Odoo 20 needs PostgreSQL 16+. |
+| `odoo-init` | `odoo:20.0-20260926` | none | One-shot. Creates database `odoo` with demo data, then exits. About 75 s the first time, about 1 s after that. |
+| `odoo` | `odoo:20.0-20260926` | `127.0.0.1:8069` (`ODOO_PORT`) | Web UI. Serves only database `odoo`; the database manager is disabled. |
+
+**Log in** at <http://localhost:8069> as `admin` / `admin` (Odoo's demo administrator; `demo` / `demo` is a regular user). Switch the UI to Arabic under your user preferences.
+
+**What `odoo-init` installs:** Sales (`sale_management`), Invoicing/Accounting (`account`), Inventory (`stock`), Purchase (`purchase`) and Point of Sale (`point_of_sale`), all with demo data. The script fails if any module's demo data fails to load: Odoo otherwise installs the module without it and only logs a warning. `account` also auto-installs the generic `l10n_us` chart of accounts. GCC localizations are out of scope here (T3.28). Arabic (`ar_001`) is loaded after the demo data, so translatable columns hold both `en_US` and `ar_001` keys, for example `product_template.name`.
+
+**Versions for pack `appliesTo`** (verified 2026-10-04 from the running instance via `/web/webclient/version_info` and `ir_module_module.latest_version`):
+
+| Component | Version |
+|---|---|
+| Odoo server | `20.0-20260926` (series `20.0`) |
+| `base` | `20.0.1.3` |
+| `sale` / `sale_management` | `20.0.1.2` / `20.0.1.0` |
+| `account` | `20.0.1.5` |
+| `stock` | `20.0.1.1` |
+| `purchase` | `20.0.1.2` |
+| `point_of_sale` | `20.0.1.0.2` |
+
+Demo data volume: 24 posted customer invoices, 8 credit notes, 24 sale orders, 14 purchase orders, 7 POS orders over 4 sessions, 60 done stock moves, and 3 companies. The demo data has relative dates, so totals differ between rebuilds; the counts do not.
+
+Read-only analyst users on this database are added in T0.16.
+
 ## Read-only users
 
 `analyst_ro` is what the analyzer uses. It is the first of the three read-only layers (SPEC §2).
@@ -45,7 +80,14 @@ Under the default QEMU emulation, SQL Server crashes on start with `qemu: uncaug
 ## Reset
 
 ```sh
-docker compose -f docker/dev/compose.yml down -v   # deletes all dev data volumes
+docker compose -f docker/dev/compose.yml --profile erp down -v   # deletes all dev data volumes
+```
+
+Rebuild only Odoo:
+
+```sh
+docker compose -f docker/dev/compose.yml --profile erp rm -sfv odoo odoo-init odoo-db
+docker volume rm expert-ai-dev_odoo-db-data expert-ai-dev_odoo-data
 ```
 
 ## Credentials
