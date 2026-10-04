@@ -1,7 +1,7 @@
 # Development databases for expert-ai: the v0.1 sources (SPEC §7.2), each
 # with a `retail` database, an owner user and a least-privilege read-only
 # user (`analyst_ro`) for the app. The Odoo and ERPNext demo instances join
-# under the `erp` profile (T0.14, T0.15).
+# under the `erp` profile (Odoo: T0.14; ERPNext: T0.15).
 #
 #   cp docker/dev/.env.example docker/dev/.env
 #   docker compose -f docker/dev/compose.yml up -d
@@ -87,7 +87,71 @@ services:
     entrypoint: [/bin/bash, /init/init.sh]
     restart: "no"
 
+  # --- erp profile: Odoo demo instance (T0.14) --------------------------
+  # Its own Postgres, so pack evals never share state with the retail DB.
+  odoo-db:
+    profiles: [erp]
+    image: postgres:18.6
+    environment:
+      # Odoo refuses to connect as `postgres`, so the superuser is `odoo`.
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: ${ODOO_DB_PASSWORD:?copy docker/dev/.env.example to docker/dev/.env}
+      POSTGRES_DB: postgres
+    ports:
+      - 127.0.0.1:${ODOO_DB_PORT:-5433}:5432
+    volumes:
+      - odoo-db-data:/var/lib/postgresql
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U odoo -d postgres]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # One-shot: creates the `odoo` database with demo data and the v0.1 pack
+  # modules. Idempotent; the first run takes several minutes.
+  odoo-init:
+    profiles: [erp]
+    image: odoo:20.0-20260926
+    depends_on:
+      odoo-db:
+        condition: service_healthy
+    environment:
+      ODOO_DB_PASSWORD: ${ODOO_DB_PASSWORD:?copy docker/dev/.env.example to docker/dev/.env}
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./init/odoo:/init:ro
+    entrypoint: [/bin/bash, /init/init.sh]
+    restart: "no"
+
+  odoo:
+    profiles: [erp]
+    image: odoo:20.0-20260926
+    depends_on:
+      odoo-init:
+        condition: service_completed_successfully
+    environment:
+      HOST: odoo-db
+      USER: odoo
+      PASSWORD: ${ODOO_DB_PASSWORD:?copy docker/dev/.env.example to docker/dev/.env}
+    # Serve only the demo database and hide the database manager, which
+    # could otherwise drop or replace it from the browser. Odoo 20 listens
+    # on loopback by default, which the published port cannot reach; the
+    # host side stays bound to 127.0.0.1.
+    command: [--, -d, odoo, --db-filter=^odoo$$, --no-database-list, --http-interface=0.0.0.0]
+    ports:
+      - 127.0.0.1:${ODOO_PORT:-8069}:8069
+    volumes:
+      - odoo-data:/var/lib/odoo
+    healthcheck:
+      test: [CMD-SHELL, 'curl -fsS http://localhost:8069/web/health > /dev/null']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
 volumes:
   postgres-data:
   mariadb-data:
   mssql-data:
+  odoo-db-data:
+  odoo-data:
