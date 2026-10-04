@@ -10,6 +10,24 @@ const noDefaultExport = {
   message: 'Use named exports (CLAUDE.md code conventions).',
 };
 
+// Open-core boundary (CLAUDE.md rule 10, ADR-0002): only ee/ and packs-ee/
+// may import Enterprise code. Matches relative paths through those folders,
+// the @expert-ai/ee* and @expert-ai/packs-ee* packages, and @ee/ aliases.
+export const ENTERPRISE_IMPORT = String.raw`(^|/)(ee|packs-ee)(/|$)|^@expert-ai/(ee|packs-ee)(-|/|$)|^@ee(/|$)`;
+
+const enterpriseMessage =
+  'Community code must not import Enterprise code (ee/, packs-ee/). Attach through a Community extension point instead (CLAUDE.md rule 10, ADR-0002).';
+
+// esquery regex literals cannot contain "/", so slashes are written as \x2F.
+const enterpriseRegex = ENTERPRISE_IMPORT.replaceAll('/', String.raw`\x2F`);
+const noEnterpriseSyntax = [
+  { selector: `ImportExpression[source.value=/${enterpriseRegex}/]`, message: enterpriseMessage },
+  {
+    selector: `CallExpression[callee.name='require'][arguments.0.value=/${enterpriseRegex}/]`,
+    message: enterpriseMessage,
+  },
+];
+
 export const ignores = [
   '**/dist/**',
   '**/coverage/**',
@@ -28,7 +46,11 @@ export const config = defineConfig(
       globals: { ...globals.node },
     },
     rules: {
-      'no-restricted-syntax': ['error', noDefaultExport],
+      'no-restricted-syntax': ['error', noDefaultExport, ...noEnterpriseSyntax],
+      'no-restricted-imports': [
+        'error',
+        { patterns: [{ regex: ENTERPRISE_IMPORT, message: enterpriseMessage }] },
+      ],
     },
   },
   {
@@ -47,6 +69,14 @@ export const config = defineConfig(
   {
     // Tools (ESLint, Vitest, Prettier, Next.js) require a default export here.
     files: ['**/*.config.{js,mjs,cjs,ts,mts}', '**/*.preset.mjs'],
-    rules: { 'no-restricted-syntax': 'off' },
+    rules: { 'no-restricted-syntax': ['error', ...noEnterpriseSyntax] },
+  },
+  {
+    // Enterprise code may import Community code and other Enterprise code.
+    files: ['ee/**', 'packs-ee/**'],
+    rules: {
+      'no-restricted-imports': 'off',
+      'no-restricted-syntax': ['error', noDefaultExport],
+    },
   },
 );

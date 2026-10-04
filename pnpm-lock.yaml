@@ -277,9 +277,6 @@ importers:
       '@eslint/js':
         specifier: 'catalog:'
         version: 10.0.1(eslint@10.12.0)
-      eslint:
-        specifier: 'catalog:'
-        version: 10.12.0
       globals:
         specifier: 'catalog:'
         version: 17.13.0
@@ -289,6 +286,10 @@ importers:
       typescript-eslint:
         specifier: 'catalog:'
         version: 8.71.0(eslint@10.12.0)(typescript@6.0.3)
+    devDependencies:
+      eslint:
+        specifier: 'catalog:'
+        version: 10.12.0
       vitest:
         specifier: 'catalog:'
         version: 5.0.3(@types/node@24.19.0)(@vitest/coverage-v8@5.0.3)(vite@8.3.1(@types/node@24.19.0))
@@ -1649,7 +1650,7 @@ snapshots:
     dependencies:
       '@vitest/istanbul-lib-coverage': 1.0.2
 
-  '@vitest/mocker@5.0.3(vite@8.3.1)':
+  '@vitest/mocker@5.0.3(vite@8.3.1(@types/node@24.19.0))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.3
@@ -2068,7 +2069,7 @@ snapshots:
   vitest@5.0.3(@types/node@24.19.0)(@vitest/coverage-v8@5.0.3)(vite@8.3.1(@types/node@24.19.0)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.3(vite@8.3.1)
+      '@vitest/mocker': 5.0.3(vite@8.3.1(@types/node@24.19.0))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
