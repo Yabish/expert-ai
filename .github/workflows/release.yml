@@ -1,0 +1,41 @@
+name: Release
+
+# develop: release-please maintains the "chore(repo): release x.y.z" PR.
+# main:    after the develop -> main release PR merges, release-please tags
+#          the merged release commit and publishes the GitHub Release.
+# See docs/adr/0004-release-automation.md.
+on:
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Release automation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # A PAT or GitHub App token is required: PRs opened with GITHUB_TOKEN
+      # do not trigger CI, so the release PR could never pass required checks.
+      HAS_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN != '' }}
+    steps:
+      - name: Explain skip
+        if: env.HAS_TOKEN != 'true'
+        run: echo "::notice::RELEASE_PLEASE_TOKEN is not set, so release automation is skipped. See docs/adr/0004-release-automation.md."
+
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        if: env.HAS_TOKEN == 'true'
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          target-branch: develop
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          skip-github-release: ${{ github.ref_name == 'develop' }}
+          skip-github-pull-request: ${{ github.ref_name == 'main' }}
