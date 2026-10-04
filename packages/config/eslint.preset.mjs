@@ -28,6 +28,58 @@ const noEnterpriseSyntax = [
   },
 ];
 
+const packageNames = (names) => `^(${names.join('|')})(/|$)`;
+
+// Import groups (CLAUDE.md rules 3, 5 and 10). no-restricted-imports options
+// are replaced wholesale by each flat-config override, so every directory
+// composes the full list of groups it must still respect.
+const importGroups = {
+  enterprise: { regex: ENTERPRISE_IMPORT, message: enterpriseMessage },
+  next: {
+    regex: packageNames(['next']),
+    message: 'Packages stay framework-free; only apps/web may import Next.js (CLAUDE.md rule 5).',
+  },
+  aiSdks: {
+    regex: packageNames([
+      'ai',
+      '@ai-sdk/[^/]+',
+      'openai',
+      '@anthropic-ai/[^/]+',
+      '@google/genai',
+      '@google/generative-ai',
+      '@google-cloud/vertexai',
+      '@mistralai/[^/]+',
+      'cohere-ai',
+      'groq-sdk',
+      'ollama',
+      '@aws-sdk/client-bedrock[^/]*',
+    ]),
+    message:
+      'Vendor and AI SDKs live only in packages/providers; use the provider abstraction (CLAUDE.md rule 3).',
+  },
+  sourceDrivers: {
+    regex: packageNames(['mysql2', 'mariadb', 'mssql', 'tedious', 'oracledb', 'mongodb']),
+    message:
+      'Database drivers live only in packages/connectors (connectors execute guarded queries).',
+  },
+  appDbDrivers: {
+    regex: packageNames(['pg', 'pg-[^/]+', 'better-sqlite3']),
+    message:
+      'Database drivers live only in packages/connectors, or packages/storage for the app DB.',
+  },
+  appDbLibraries: {
+    regex: packageNames(['drizzle-orm', 'drizzle-kit', 'sqlite-vec', 'pgvector']),
+    message: 'App-DB libraries live only in packages/storage.',
+  },
+};
+
+const restrictImports = (...groups) => [
+  'error',
+  { patterns: groups.map((group) => importGroups[group]) },
+];
+
+const allDrivers = ['sourceDrivers', 'appDbDrivers'];
+
 export const ignores = [
   '**/dist/**',
   '**/coverage/**',
@@ -47,11 +99,54 @@ export const config = defineConfig(
     },
     rules: {
       'no-restricted-syntax': ['error', noDefaultExport, ...noEnterpriseSyntax],
-      'no-restricted-imports': [
-        'error',
-        { patterns: [{ regex: ENTERPRISE_IMPORT, message: enterpriseMessage }] },
-      ],
+      'no-restricted-imports': restrictImports(
+        'enterprise',
+        'aiSdks',
+        ...allDrivers,
+        'appDbLibraries',
+      ),
     },
+  },
+  {
+    files: ['packages/**'],
+    rules: {
+      'no-restricted-imports': restrictImports(
+        'enterprise',
+        'next',
+        'aiSdks',
+        ...allDrivers,
+        'appDbLibraries',
+      ),
+    },
+  },
+  {
+    files: ['packages/providers/**'],
+    rules: {
+      'no-restricted-imports': restrictImports(
+        'enterprise',
+        'next',
+        ...allDrivers,
+        'appDbLibraries',
+      ),
+    },
+  },
+  {
+    files: ['packages/connectors/**'],
+    rules: {
+      'no-restricted-imports': restrictImports('enterprise', 'next', 'aiSdks', 'appDbLibraries'),
+    },
+  },
+  {
+    // The app DB is Postgres or SQLite (SPEC §12); analyzed sources stay in connectors.
+    files: ['packages/storage/**'],
+    rules: {
+      'no-restricted-imports': restrictImports('enterprise', 'next', 'aiSdks', 'sourceDrivers'),
+    },
+  },
+  {
+    // Dev tooling (seeders) loads sample data straight into the dev databases.
+    files: ['tools/**', 'scripts/**'],
+    rules: { 'no-restricted-imports': restrictImports('enterprise', 'aiSdks', 'appDbLibraries') },
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts'],
@@ -75,7 +170,7 @@ export const config = defineConfig(
     // Enterprise code may import Community code and other Enterprise code.
     files: ['ee/**', 'packs-ee/**'],
     rules: {
-      'no-restricted-imports': 'off',
+      'no-restricted-imports': restrictImports('aiSdks', ...allDrivers, 'appDbLibraries'),
       'no-restricted-syntax': ['error', noDefaultExport],
     },
   },
